@@ -9,6 +9,7 @@ entity Books : cuid, managed {
   stock    : Integer;
   price    : Decimal(9,2);
   currency : Currency;
+  category : Category;
 }
 
 entity Authors : cuid, managed {
@@ -33,4 +34,10 @@ entity OrderItems : cuid {
   book      : Association to Books;
   amount    : Integer;
   netAmount : Decimal(9,2);
+}
+
+entity Category : cuid {
+  name       :  String;
+  descrption :  String;
+  books      :  Association to many Books on books.category = $self;
 }
