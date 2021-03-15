@@ -21,11 +21,11 @@ extend service external with {
   /**
    * Add asynchronous eventing API
    */
-  event BO_BusinessPartner_Changed {
-    ![KEY]: Array of {
-      BUSINESSPARTNER: String;
-    };
-  }
+  // event BO_BusinessPartner_Changed {
+  //   ![KEY]: Array of {
+  //     BUSINESSPARTNER: String;
+  //   };
+  // }
 
 }
 

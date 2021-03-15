@@ -34,3 +34,9 @@ entity OrderItems : cuid {
   amount    : Integer;
   netAmount : Decimal(9,2);
 }
+
+entity BookCategory : cuid, managed {
+  name    : localized String(128);
+  descr    : localized String(2000);
+  update_time: Timestamp;
+}

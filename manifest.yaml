@@ -1,0 +1,9 @@
+---
+applications:
+- name: cloud-cap-samples-java-db
+  path: .
+  no-route: true
+  health-check-type: process
+  memory: 128M
+  services:
+  - cloud-cap-samples-java-db-hdi-container
