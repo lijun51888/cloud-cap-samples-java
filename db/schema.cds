@@ -9,6 +9,7 @@ entity Books : cuid, managed {
   stock    : Integer;
   price    : Decimal(9,2);
   currency : Currency;
+  bookCategory :Association to BookCategory;
 }
 
 entity Authors : cuid, managed {
@@ -36,7 +37,8 @@ entity OrderItems : cuid {
 }
 
 entity BookCategory : cuid, managed {
-  name    : localized String(128);
+  name     : localized String(128);
   descr    : localized String(2000);
-  update_time: Timestamp;
+  subBookQuantity : Integer;
+  books    :  Association to many Books on books.bookCategory = $self;
 }

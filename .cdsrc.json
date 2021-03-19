@@ -2,25 +2,31 @@
     "build": {
         "target": ".",
         "tasks": [
-
             {
-                "for": "mtx",
-                "src": ".",
-                "dest": "mtx-sidecar"
+                "for": "node-cf",
+                "src": "srv",
+                "options": {
+                    "model": [
+                        "srv",
+                        "db",
+                        "app"
+                    ]
+                }
             },
             {
                 "for": "hana",
                 "src": "db",
-                "dest": "."
-            },
-            {
-                "for": "java-cf",
-                "src": "srv",
-                "dest": "."
+                "options": {
+                    "model": [
+                        "db",
+                        "srv"
+                    ]
+                }
             }
         ]
     },
+    "i18n": { "default_language": "zh" },
     "hana": {
-        "deploy-format": "hdbtable"
+      "deploy-format": "hdbtable"
     }
 }

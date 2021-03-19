@@ -1,7 +1,48 @@
 {
-    "name": "bookshop-java",
-    "version": "1.0.0",
-    "description": "Bookshop using CAP Java NG",
-    "license": "Apache License Version 2.0",
-    "repository": "https://github.com/SAP-samples/cloud-cap-samples-java.git"
+  "name": "bookshop-java",
+  "version": "1.0.0",
+  "description": "Bookshop using CAP Java NG",
+  "license": "Apache License Version 2.0",
+  "repository": "https://github.com/SAP-samples/cloud-cap-samples-java.git",
+  "engines": {
+    "node": "^10 || ^12"
+  },
+  "dependencies": {
+    "@sap/cds": "^3.34.2",
+    "@sap/hana-client": "^2.4.196",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@sap/hdi-deploy": "^3.11.15",
+    "eslint": "^6.1.0",
+    "sqlite3": "^4.2.0"
+  },
+  "scripts": {
+    "build": "cds build",
+    "deploy": "cds deploy",
+    "start": "cds run"
+  },
+  "files": [
+    "srv",
+    "db"
+  ],
+  "cds": {
+    "build": {
+      "target": "."
+    },
+    "i18n": {
+      "default_language": "zh"
+    },
+    "requires": {
+      "db": {
+        "kind": "sqlite",
+        "credentials": {
+          "database": "bookstore.db"
+        }
+      }
+    },
+    "odata": {
+      "version": "v4"
+    }
+  }
 }

@@ -1,9 +1,17 @@
 {
   "name": "deploy",
   "dependencies": {
-    "@sap/hdi-deploy": "^3"
+    "@sap/hdi-deploy": "^3",
+    "@sap/hana-client": "^2.5.86"
   },
   "scripts": {
     "start": "node node_modules/@sap/hdi-deploy --exit"
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "sqlite"
+      }
+    }
   }
 }

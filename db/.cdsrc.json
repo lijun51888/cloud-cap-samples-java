@@ -1,0 +1,14 @@
+{
+    "build": {
+        "target": ".",
+        "tasks": [
+            {
+                "for": "hana",
+                "src": "."
+            }
+        ]
+    },
+    "hana": {
+        "deploy-format": "hdbtable"
+    }
+}
