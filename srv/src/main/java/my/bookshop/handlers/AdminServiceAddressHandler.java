@@ -46,7 +46,7 @@ import cds.gen.adminservice.Orders;
 import cds.gen.api_business_partner.ABusinessPartnerAddress;
 import cds.gen.api_business_partner.ABusinessPartnerAddress_;
 import cds.gen.api_business_partner.ApiBusinessPartner_;
-import cds.gen.api_business_partner.BOBusinessPartnerChanged;
+//import cds.gen.api_business_partner.BOBusinessPartnerChanged;
 import cds.gen.my.bookshop.Addresses_;
 import my.bookshop.MessageKeys;
 
@@ -144,36 +144,36 @@ public class AdminServiceAddressHandler implements EventHandler {
 			}
 		});
 	}
-
-	@On(service = "bupa-messaging", event = "BO/BusinessPartner/Changed")
-	public void updateBusinessPartnerAddresses(TopicMessageEventContext context) {
-		logger.info(">> received: " + context.getData());
-		BOBusinessPartnerChanged payload = Struct.access(payloadMap(context.getData())).as(BOBusinessPartnerChanged.class);
-		for(BOBusinessPartnerChanged.Key key : payload.getKey()) {
-			String businessPartner = key.getBusinesspartner(); // S/4 HANA's payload format
-			if(businessPartner != null) {
-				// fetch affected entries from local replicas
-				Result replicas = db.run(Select.from(addresses).where(a -> a.BusinessPartner().eq(businessPartner)));
-				if(replicas.rowCount() > 0) {
-					logger.info("Updating Addresses for BusinessPartner '{}'", businessPartner);
-					// fetch changed data from S/4 -> might be less than local due to deletes
-					Result remoteAddresses = bupa.run(Select.from(externalAddresses).columns(getRelevantColumns()).where(a -> a.BusinessPartner().eq(businessPartner)));
-					// update replicas or add tombstone if external address was deleted
-					replicas.streamOf(Addresses.class).forEach(rep -> {
-						Optional<ABusinessPartnerAddress> matching = remoteAddresses.streamOf(ABusinessPartnerAddress.class).filter(ext -> ext.getAddressID().equals(rep.getAddressID())).findFirst();
-						if(!matching.isPresent()) {
-							rep.setTombstone(true);
-						} else {
-							rep.replaceAll((k, v) -> matching.get().get(k));
-						}
-					});
-					// update local replicas with changes from S/4
-					db.run(Upsert.into(addresses).entries(replicas));
-				}
-			}
-		}
-		context.setCompleted();
-	}
+//
+//	@On(service = "bupa-messaging", event = "BO/BusinessPartner/Changed")
+//	public void updateBusinessPartnerAddresses(TopicMessageEventContext context) {
+//		logger.info(">> received: " + context.getData());
+//		BOBusinessPartnerChanged payload = Struct.access(payloadMap(context.getData())).as(BOBusinessPartnerChanged.class);
+//		for(BOBusinessPartnerChanged.Key key : payload.getKey()) {
+//			String businessPartner = key.getBusinesspartner(); // S/4 HANA's payload format
+//			if(businessPartner != null) {
+//				// fetch affected entries from local replicas
+//				Result replicas = db.run(Select.from(addresses).where(a -> a.BusinessPartner().eq(businessPartner)));
+//				if(replicas.rowCount() > 0) {
+//					logger.info("Updating Addresses for BusinessPartner '{}'", businessPartner);
+//					// fetch changed data from S/4 -> might be less than local due to deletes
+//					Result remoteAddresses = bupa.run(Select.from(externalAddresses).columns(getRelevantColumns()).where(a -> a.BusinessPartner().eq(businessPartner)));
+//					// update replicas or add tombstone if external address was deleted
+//					replicas.streamOf(Addresses.class).forEach(rep -> {
+//						Optional<ABusinessPartnerAddress> matching = remoteAddresses.streamOf(ABusinessPartnerAddress.class).filter(ext -> ext.getAddressID().equals(rep.getAddressID())).findFirst();
+//						if(!matching.isPresent()) {
+//							rep.setTombstone(true);
+//						} else {
+//							rep.replaceAll((k, v) -> matching.get().get(k));
+//						}
+//					});
+//					// update local replicas with changes from S/4
+//					db.run(Upsert.into(addresses).entries(replicas));
+//				}
+//			}
+//		}
+//		context.setCompleted();
+//	}
 
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> payloadMap(String json) {

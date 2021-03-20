@@ -123,53 +123,15 @@ class AdminServiceHandler implements EventHandler {
 		});
 	}
 
-	@Before(event = {  CdsService.EVENT_UPSERT, CdsService.EVENT_UPDATE })
-	public void beforeCreateBook(Stream<Book> books) {
-		orders.forEach(order -> {
-			// reset total
-			order.setTotal(BigDecimal.valueOf(0));
-			order.getItems().forEach(orderItem -> {
-				// validation of the Order creation request
-				Integer amount = orderItem.getAmount();
-				if (amount == null || amount <= 0) {
-					// exceptions with localized messages from property files
-					// exceptions abort the request and set an error http status code
-					throw new ServiceException(ErrorStatuses.BAD_REQUEST, MessageKeys.AMOUNT_REQUIRE_MINIMUM)
-							.messageTarget("in", ORDERS, o -> o.Items(i -> i.ID().eq(orderItem.getId()).and(i.IsActiveEntity().eq(false))).amount());
-				}
-
-				String bookId = orderItem.getBookId();
-				if (bookId == null) {
-					// Tip: using static text without localization is still possible in exceptions and messages
-					throw new ServiceException(ErrorStatuses.BAD_REQUEST, "You have to specify the book to order");
-				}
-
-				// calculate the actual amount difference
-				// FIXME this should handle book changes, currently only amount changes are handled
-				int diffAmount = amount - db.run(Select.from(Bookshop_.ORDER_ITEMS).columns(i -> i.amount()).byId(orderItem.getId()))
-						.first(OrderItems.class).map(i -> i.getAmount()).orElse(0);
-
-				// check if enough books are available
-				Result result = db.run(Select.from(BOOKS).columns(b -> b.ID(), b -> b.stock(), b -> b.price()).byId(bookId));
-				Books book = result.first(Books.class).orElseThrow(notFound(MessageKeys.BOOK_MISSING));
-				if (book.getStock() < diffAmount) {
-					// Tip: you can have localized messages and use parameters in your messages
-					throw new ServiceException(ErrorStatuses.BAD_REQUEST, MessageKeys.BOOK_REQUIRE_STOCK, book.getStock());
-				}
-
-				// update the book with the new stock
-				book.setStock(book.getStock() - diffAmount);
-				db.run(Update.entity(BOOKS).data(book));
-
-				// update the net amount
-				BigDecimal updatedNetAmount = book.getPrice().multiply(BigDecimal.valueOf(amount));
-				orderItem.setNetAmount(updatedNetAmount);
-
-				// update the total
-				order.setTotal(order.getTotal().add(updatedNetAmount));
-			});
-		});
-	}
+//	@Before(event = {  CdsService.EVENT_UPSERT, CdsService.EVENT_UPDATE })
+//	public void beforeCreateBook(Stream<Book> books) {
+//		books.forEach(book -> {
+//			// reset total
+//			book.set
+//
+//			});
+//		});
+//	}
 
 	/**
 	 * Calculate the total order value preview when editing an order item

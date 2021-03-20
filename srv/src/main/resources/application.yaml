@@ -1,6 +1,7 @@
 ---
 spring:
   web.resources.static-locations: "file:./app"
+  profiles.active: cloud
 cds:
   odata-v4.endpoint.path: "/api"
   messaging.services:
@@ -16,7 +17,6 @@ cds:
         - "10401010"
     - name: user
       password: user
-
 ---
 spring:
   config.activate.on-profile: cloud
